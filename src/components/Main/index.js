@@ -8,66 +8,64 @@ import Nav from "../Nav/index";
 
 export default class Main extends Component {
     state = {
-        response: [],
-        name: "",
+        employees: [],
         search: "",
         searchRes: []
     }
 
-    async componentDidMount() {
+     componentDidMount() {
         console.log("Component did mount");
-       const employees = await API.fetchUsers()
-       console.log(employees)
-        this.setState({response:employees.data.results, searchRes: employees.data.results})
-    } 
+       API.fetchUsers()
+        .then(res => {
+            this.setState({ employees: res.data.results })
+    }) }
 
     handleInputChange = event => {
-        this.setState({ search: event.target.value })
-        
-    }
-
-    handleFormSubmit = event => {
-        console.log("handleformsubmit working")
-        event.preventDefault();
-        this.findIt()
-    }
-
-    findIt = () => {
-        console.log("Findit function is working");
-        const finder = this.state.response.filter((boot) => {
-            return (boot.name.first === this.state.search) 
-        })
+        const value = event.target.value;
+        const name = event.target.name;
         this.setState({
-            searchRes: finder
-        })
-        console.log(finder);
-    }
-
-    sorter = (property, property2) => {
-        const employees = this.state.response.sort(function (a, b) {
-        if (property2) {
-            if (a[property][property2].toLowerCase() < b[property][property2].toLowerCase()) { return -1; }
-       
-            if (a[property][property2].toLowerCase() > b[property][property2].toLowerCase()) { return 1; }
-          return 0; 
-            
+          [name]: value
+        });
+      };
+      renderEmployees = () => {
+            const tableData = (
+          employee => (
+            <DataTable
+              id={employee.id.value}
+              key={employee.id.value}
+              first={employee.name.first}
+              last={employee.name.last}
+              picture={employee.picture.thumbnail}
+              phone={employee.phone}
+              email={employee.email}
+            />
+          ))
+    
+        if (this.state.search === "") {
+          return this.state.employees.map(tableData);
         } else {
-            if (a[property].toLowerCase() < b[property].toLowerCase()) { return -1; }
-       
-            if (a[property].toLowerCase() > b[property].toLowerCase()) { return 1; }
-          return 0; 
-           
+          const filteredList = this.state.sortedList.filter(employee => (
+            employee.name.first.toLowerCase().includes(this.state.search)
+          ))
+          return (filteredList.map(tableData))
         }
-        })
-        this.setState({searchRes: employees})
       }
-
+    
     render() {
         return (
             <>
-                    <Nav />
+                    <Nav employees={this.state.employees}
+            search={this.state.search}
+            handleInputChange={this.handleInputChange}/>
                 <DataArea />
-                <DataTable employees={this.state.searchRes} sorter={this.sorter}/>
+                {/* <DataTable employees={this.state.searchRes} sorter={this.sorter}/> */}
+                <div className="table-responsive">
+            <table className="table table-striped">
+              <tbody>
+                {this.renderEmployees()}
+              </tbody>
+            </table>
+          </div>
             </>
         )
     }

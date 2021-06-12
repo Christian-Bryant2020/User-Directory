@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import DataTable from "../DataTable/index";
-//import API from "../utils/API";
+import React from "react";
 
+function DataTable(props) {
 
-export default class DataArea extends Component{
-render() {
-    return (
-        <>
+        return (
+            <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Image</th>
+                <th scope="col" onClick={props.handleOnClick}>Name</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Email</th>
+            </tr>
+        </thead>
+        </table>
 
-        <DataTable />
-        </>
-
-
-    )
+  );
 }
-    
-}
-
+export default DataTable;

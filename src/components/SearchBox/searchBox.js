@@ -16,10 +16,8 @@ function SearchBox(props) {
           className="form-control"
           placeholder="Search by first name"
           id="category"
+          
         />
-        <button type="submit" onClick={props.handleFormAlpha} className="btn btn-danger">
-          Sort Alphabetically
-        </button>
         <button type="submit" onClick={props.handleFormSubmit} className="btn btn-success">
           Search
         </button>
